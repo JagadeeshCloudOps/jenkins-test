@@ -3,7 +3,7 @@ pipeline {
          node { label 'jenkins-test' } 
     } 
      environment { 
-        env = 'jenkins-test'
+        NODE = 'jenkins-test'
     }
     options {
          disableConcurrentBuilds() 
@@ -15,7 +15,7 @@ pipeline {
                 script {
                         sh """ 
                             echo 'Building..'
-                            echo 'Environment: ${env}'
+                            echo 'Environment: ${NODE}'
                         """
                 }
             }
@@ -25,7 +25,7 @@ pipeline {
                 script {
                     sh """ 
                         echo 'Testing..'
-                        echo 'Environment: ${env}'
+                        echo 'Environment: ${NODE}'
                     """
                 }
             }
@@ -35,7 +35,7 @@ pipeline {
                 script {
                     sh """ 
                         echo 'Deploying....'
-                        echo 'Environment: ${env}'
+                        echo 'Environment: ${NODE}'
                     """
                 }
             }
