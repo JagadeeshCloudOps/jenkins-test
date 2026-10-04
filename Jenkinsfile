@@ -37,6 +37,9 @@ pipeline {
         always { 
             echo 'I will always say Hello again!'
         }
+        success {
+            echo 'I will say Hello only if pipeline successful!'
+        }
     }
-    
+
 }
