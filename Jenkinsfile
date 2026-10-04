@@ -6,6 +6,9 @@ pipeline {
 
      environment { 
         appVersion = ""
+        ACC_ID = "567579393458"
+        AWS_REGION = "us-east-1"
+        ECR_REPO_NAME = "nodejs/jenkins-test"
     } 
 
     options {
@@ -50,9 +53,30 @@ pipeline {
             steps {
                 script {
                     sh """ 
-                        docker build -t my-nodejs-app:${appVersion} .
+                        docker build -t ${ECR_REPO_NAME}:${env.APP_VERSION} ${registryUrl}/${ECR_REPO_NAME}:${appVersion} .
                         
                     """
+                }
+            }
+        }
+        stage('Push to Amazon ECR') {
+            steps {
+                // 3. Authenticate and push using the Pipeline: AWS Steps plugin
+                withAWS(credentials: 'aws-creds', region: "${AWS_REGION}") {
+                    script {
+                        def registryUrl = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+                        
+                        // Login to ECR
+                        sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${registryUrl}"
+                        
+                        // Tag image for the remote repository
+                        sh "docker tag ${ECR_REPO_NAME}:${appVersion} ${registryUrl}/${ECR_REPO_NAME}:${appVersion}"
+                        
+                        // Push specific version tag and 'latest' tag
+                        sh "docker tag ${ECR_REPO_NAME}:${appVersion} ${registryUrl}/${ECR_REPO_NAME}:latest"
+                        sh "docker push ${registryUrl}/${ECR_REPO_NAME}:${appVersion}"
+                        sh "docker push ${registryUrl}/${ECR_REPO_NAME}:latest"
+                    }
                 }
             }
         }
