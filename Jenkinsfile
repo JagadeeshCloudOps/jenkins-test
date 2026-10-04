@@ -54,7 +54,7 @@ pipeline {
             steps {
                 script {
                     sh """ 
-                        docker build -t ${ECR_REPO_NAME}:${appVersion} ${registryUrl}/${ECR_REPO_NAME}:${appVersion} .
+                        docker build -t ${ECR_REPO_NAME}:${appVersion} .
                         
                     """
                 }
@@ -65,7 +65,7 @@ pipeline {
                 // 3. Authenticate and push using the Pipeline: AWS Steps plugin
                 withAWS(credentials: 'aws-creds', region: "${AWS_REGION}") {
                     script {
-                         registryUrl = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+                        def registryUrl = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
                         
                         // Login to ECR
                         sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${registryUrl}"
