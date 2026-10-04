@@ -2,6 +2,12 @@ pipeline {
     agent {
          node { label 'jenkins-test' } 
     } 
+     environment { 
+        env = 'jenkins-test'
+    }
+    options {
+         disableConcurrentBuilds() 
+    }
 
     stages {
         stage('Build') {
@@ -9,6 +15,7 @@ pipeline {
                 script {
                         sh """ 
                             echo 'Building..'
+                            echo 'Environment: ${env}'
                         """
                 }
             }
@@ -18,6 +25,7 @@ pipeline {
                 script {
                     sh """ 
                         echo 'Testing..'
+                        echo 'Environment: ${env}'
                     """
                 }
             }
@@ -26,7 +34,8 @@ pipeline {
             steps {
                 script {
                     sh """ 
-                        ech 'Deploying....'
+                        echo 'Deploying....'
+                        echo 'Environment: ${env}'
                     """
                 }
             }
