@@ -69,14 +69,10 @@ pipeline {
                         
                         // Login to ECR
                         sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${registryUrl}"
-                        
+                        docker build -t ${ECR_REPO_NAME}:${appVersion} ${registryUrl}/${ECR_REPO_NAME}:${appVersion} .
                         // Tag image for the remote repository
-                        sh "docker tag ${ECR_REPO_NAME}:${appVersion} ${registryUrl}/${ECR_REPO_NAME}:${appVersion}"
-                        
-                        // Push specific version tag and 'latest' tag
-                        sh "docker tag ${ECR_REPO_NAME}:${appVersion} ${registryUrl}/${ECR_REPO_NAME}:latest"
-                        sh "docker push ${registryUrl}/${ECR_REPO_NAME}:${appVersion}"
-                        sh "docker push ${registryUrl}/${ECR_REPO_NAME}:latest"
+                        sh "docker push ${ECR_REPO_NAME}:${appVersion} ${registryUrl}/${ECR_REPO_NAME}:${appVersion}"
+                    
                     }
                 }
             }
