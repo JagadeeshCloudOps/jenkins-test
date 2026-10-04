@@ -40,6 +40,9 @@ pipeline {
         success {
             echo 'I will say Hello only if pipeline successful!'
         }
+         failure {
+            echo 'I will say Hello only if pipeline fails!'
+        }
     }
 
 }
