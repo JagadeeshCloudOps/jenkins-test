@@ -53,7 +53,7 @@ pipeline {
             steps {
                 script {
                     sh """ 
-                        docker build -t ${ECR_REPO_NAME}:${env.APP_VERSION} ${registryUrl}/${ECR_REPO_NAME}:${appVersion} .
+                        docker build -t ${ECR_REPO_NAME}:${appVersion} ${registryUrl}/${ECR_REPO_NAME}:${appVersion} .
                         
                     """
                 }
