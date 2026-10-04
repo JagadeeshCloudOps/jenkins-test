@@ -50,7 +50,7 @@ pipeline {
                 }
             }
         }
-        stage('Build Image') {
+        /* stage('Build Image') {
             steps {
                 script {
                     sh """ 
@@ -59,8 +59,8 @@ pipeline {
                     """
                 }
             }
-        }
-        stage('Push to Amazon ECR') {
+        } */
+        stage('Build and Push to Amazon ECR') {
             steps {
                 // 3. Authenticate and push using the Pipeline: AWS Steps plugin
                 withAWS(credentials: 'aws-creds', region: "${AWS_REGION}") {
@@ -69,7 +69,9 @@ pipeline {
                         
                         // Login to ECR
                         sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${registryUrl}"
-                        docker build -t ${ECR_REPO_NAME}:${appVersion} ${registryUrl}/${ECR_REPO_NAME}:${appVersion} .
+                        
+                        sh "docker build -t ${ECR_REPO_NAME}:${appVersion} ${registryUrl}/${ECR_REPO_NAME}:${appVersion} ."
+                        
                         // Tag image for the remote repository
                         sh "docker push ${ECR_REPO_NAME}:${appVersion} ${registryUrl}/${ECR_REPO_NAME}:${appVersion}"
                     
