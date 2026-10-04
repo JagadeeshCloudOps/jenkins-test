@@ -51,14 +51,14 @@ pipeline {
             when {
                 expression { return params.Deploy == true }
             }
-            // steps {
-            //     script {
-            //         sh """ 
-            //             echo 'Deploying....'
-            //             echo 'Environment: ${NODE}'
-            //         """
-            //     }
-            // }
+            steps {
+                script {
+                  sh """ 
+                      echo 'Deploying....'
+                       echo 'Environment: ${NODE}'
+                   """
+                }
+            }
         }
     }
 
